@@ -44,3 +44,4 @@ services:
 volumes:
   hospital-data:
     driver: local
+    
