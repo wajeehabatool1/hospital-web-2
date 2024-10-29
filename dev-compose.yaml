@@ -1,0 +1,46 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: frontend-Dockerfile
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
+    tty: true
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: backend-Dockerfile
+    container_name: backend
+    ports:
+      - "4451:4451"
+    environment:
+      - DB_URI=mongodb://mongodb:27017/hospital
+      - jwtsecret=12345
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - mongodb
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=hospital
+    ports:
+      - "27017:27017"
+    volumes:
+      - hospital-data:/data/db
+
+volumes:
+  hospital-data:
+    driver: local

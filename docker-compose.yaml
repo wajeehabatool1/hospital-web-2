@@ -1,0 +1,32 @@
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "4173:4173"
+
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - "4451:4451"
+    environment:
+      - DB_URI=mongodb://mongodb:27017/hospital
+      - jwtsecret=12345
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=hospital  
+    ports:
+      - "27017:27017"
+    volumes:
+      - hospital-data:/data/db  
+
+volumes:
+  hospital-data:
+
