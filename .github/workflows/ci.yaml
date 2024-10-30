@@ -7,16 +7,12 @@ on:
       - 'frontend/**'
       - 'backend/**'
       - '.github/workflows/ci.yaml'
-    paths-ignore:
-      - '**/README.md'
   pull_request:
     branches: [main]
     paths:
       - 'frontend/**'
       - 'backend/**'
       - '.github/workflows/ci.yaml'
-    paths-ignore:
-      - '**/README.md'
 
 jobs:
   lint:
