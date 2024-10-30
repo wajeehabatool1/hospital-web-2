@@ -1,1 +1,47 @@
+name: CI Pipeline
 
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - '.github/workflows/ci.yaml'
+    paths-ignore:
+      - '**/README.md'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - '.github/workflows/ci.yaml'
+    paths-ignore:
+      - '**/README.md'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create result directory
+        run: mkdir -p results/lint
+        shell: bash
+
+      - name: Run ESLint on frontend
+        run: | 
+          npx eslint . --ignore-path .eslintignore -o results/lint/frontend_lint.txt 
+        working-directory: ./frontend
+        shell: bash 
+
+      - name: Run ESLint on backend
+        run: | 
+          npx eslint . --ignore-path .eslintignore -o results/lint/backend_lint.txt
+        working-directory: ./backend
+        shell: bash
+
+      - name: Upload lint result
+        uses: actions/upload-artifact@v3
+        with:
+          name: lint-results
+          path: results/lint/
