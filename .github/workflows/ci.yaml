@@ -34,4 +34,20 @@ jobs:
        - name: unit testing
          run: npm test
          working-directory: ./backend
-  
+  frontend:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v3
+        - name: install dependencies
+          run: npm ci
+          working-directory: ./frontend
+        - name:  run eslint
+          run:   npm lint
+          working-directory: ./frontend
+        - name: build frontend
+          run: npm run build
+          working-directory: ./frontend
+        - name: unit testing
+          run: npm test 
+          working-directory: ./frontend
