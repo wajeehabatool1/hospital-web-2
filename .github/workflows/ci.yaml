@@ -15,29 +15,19 @@ on:
       - '.github/workflows/ci.yaml'
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+  backend:
+     runs-on: ubuntu-latest
 
-      - name: Create result directory
-        run: mkdir -p results/lint
-        shell: bash
-
-      - name: Run ESLint on frontend
-        run: | 
-          npx eslint . --ignore-path .eslintignore -o results/lint/frontend_lint.txt 
-        working-directory: ./frontend
-        shell: bash 
-
-      - name: Run ESLint on backend
-        run: | 
-          npx eslint . --ignore-path .eslintignore -o results/lint/backend_lint.txt
-        working-directory: ./backend
-        shell: bash
-
-      - name: Upload lint result
-        uses: actions/upload-artifact@v3
-        with:
-          name: lint-results
-          path: results/lint/
+     steps:
+       - uses: actions/checkout@v3
+       - name: install dependencies
+         run: npm ci
+         working-directory: ./backend
+         
+       - name: run eslint
+         run: npx eslint . --ignore-pattern .eslintignore
+         working-directory: ./backend
+       
+       - name: build application 
+         run: npm run build
+         working-directory: ./backend
