@@ -43,7 +43,7 @@ jobs:
           run: npm ci
           working-directory: ./frontend
         - name:  run eslint
-          run:   npm lint
+          run:   npm run lint
           working-directory: ./frontend
         - name: build frontend
           run: npm run build
