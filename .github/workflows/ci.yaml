@@ -33,7 +33,7 @@ jobs:
         working-directory: ./backend
 
       - name: Build Docker image for backend
-        run: docker build -t my-docker-repo/backend:latest ./backend
+        run: docker build -f ./backend/backend-Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./backend
 
       - name: Push Docker image to registry
         env:
@@ -41,7 +41,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}  # Secret for username
         run: |
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-          docker push my-docker-repo/backend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest  # Use your Docker Hub username from the secret
 
   frontend:
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
         working-directory: ./frontend
 
       - name: Build Docker image for frontend
-        run: docker build -t my-docker-repo/frontend:latest ./frontend
+        run: docker build -f ./frontend/frontend-Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./frontend
 
       - name: Push Docker image to registry
         env:
@@ -69,4 +69,4 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}  # Secret for username
         run: |
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-          docker push my-docker-repo/frontend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest  # Use your Docker Hub username from the secret
