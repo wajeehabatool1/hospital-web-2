@@ -20,10 +20,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Install dependencies
         run: npm ci
         working-directory: ./backend
-         
+
       - name: Build application
         run: npm run build
         working-directory: ./backend
@@ -32,22 +33,32 @@ jobs:
         run: npm test
         working-directory: ./backend
 
+      - name: SonarCloud Analysis for Backend
+        uses: sonarsource/sonarcloud-github-action@v1.1
+        with:
+          organization: 'devops10'  
+          projectKey: 'devops-backend' 
+          projectName: 'Backend Project' 
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_QUBE }}  # Reference your SonarCloud token
+
       - name: Build Docker image for backend
         run: docker build -f ./backend/backend-Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./backend
 
       - name: Push Docker image to registry
         env:
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}  # Secret for password
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}  # Secret for username
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-          docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest  # Use your Docker Hub username from the secret
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
 
   frontend:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Install dependencies
         run: npm ci
         working-directory: ./frontend
@@ -60,13 +71,22 @@ jobs:
         run: npm test
         working-directory: ./frontend
 
+      - name: SonarCloud Analysis for Frontend
+        uses: sonarsource/sonarcloud-github-action@v1.1
+        with:
+          organization: 'devops10' 
+          projectKey: 'devops-frontend'  
+          projectName: 'Frontend Project' 
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_QUBE }}  
+
       - name: Build Docker image for frontend
         run: docker build -f ./frontend/frontend-Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./frontend
 
       - name: Push Docker image to registry
         env:
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}  # Secret for password
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}  # Secret for username
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-          docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest  # Use your Docker Hub username from the secret
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
