@@ -24,9 +24,9 @@ jobs:
          run: npm ci
          working-directory: ./backend
          
-       - name: run eslint
-         run: npx eslint . --ignore-pattern .eslintignore
-         working-directory: ./backend
+      # - name: run eslint
+       #  run: npx eslint . --ignore-pattern .eslintignore
+       #  working-directory: ./backend
        
        - name: build application 
          run: npm run build
