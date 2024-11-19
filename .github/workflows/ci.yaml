@@ -45,7 +45,7 @@ jobs:
         with:
           organization: 'devops10'
           projectKey: 'devops-backend'
-          projectName: 'Backend Project'
+          
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_QUBE }}  
 
@@ -90,7 +90,7 @@ jobs:
         with:
           organization: 'devops10'
           projectKey: 'devops-frontend'
-          projectName: 'Frontend Project'
+          
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_QUBE }}  
 
