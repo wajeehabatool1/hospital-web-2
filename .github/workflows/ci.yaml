@@ -16,38 +16,57 @@ on:
 
 jobs:
   backend:
-     runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-     steps:
-       - uses: actions/checkout@v3
-       - name: install dependencies
-         run: npm ci
-         working-directory: ./backend
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./backend
          
-       - name: run eslint
-         run: npx eslint . --ignore-pattern .eslintignore
-         working-directory: ./backend
-       
-       - name: build application 
-         run: npm run build
-         working-directory: ./backend
-       - name: unit testing
-         run: npm test
-         working-directory: ./backend
-  frontend:
-      runs-on: ubuntu-latest 
+      - name: Build application
+        run: npm run build
+        working-directory: ./backend
 
-      steps:
-        - uses: actions/checkout@v3
-        - name: install dependencies
-          run: npm ci
-          working-directory: ./frontend
-      #  - name:  run eslint
-      #    run:   npx eslint . --ignore-pattern .eslintignore
-      #    working-directory: ./frontend
-        - name: build frontend
-          run: npm run build
-          working-directory: ./frontend
-        - name: unit testing
-          run: npm test 
-          working-directory: ./frontend
+      - name: Unit testing
+        run: npm test
+        working-directory: ./backend
+
+      - name: Build Docker image for backend
+        run: docker build -t my-docker-repo/backend:latest ./backend
+
+      - name: Push Docker image to registry
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}  # Secret for password
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}  # Secret for username
+        run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker push my-docker-repo/backend:latest
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./frontend
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: ./frontend
+
+      - name: Unit testing
+        run: npm test
+        working-directory: ./frontend
+
+      - name: Build Docker image for frontend
+        run: docker build -t my-docker-repo/frontend:latest ./frontend
+
+      - name: Push Docker image to registry
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}  # Secret for password
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}  # Secret for username
+        run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker push my-docker-repo/frontend:latest
