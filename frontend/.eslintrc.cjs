@@ -40,6 +40,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true, // Ensure JSX is supported
     },
+    project: './tsconfig.json', // Add this line pointing to your tsconfig.json
   },
   settings: {
     react: {
@@ -55,5 +56,4 @@ module.exports = {
     ],
     '@typescript-eslint/explicit-module-boundary-types': 'off', // Example TypeScript rule
   },
-}
-
+};
