@@ -20,10 +20,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
       - name: Install dependencies
         run: npm ci
         working-directory: ./backend
-         
+
+      - name: Lint Backend Code
+        run: npm run lint
+        working-directory: ./backend
+
       - name: Build application
         run: npm run build
         working-directory: ./backend
@@ -32,10 +37,10 @@ jobs:
         run: npm test
         working-directory: ./backend
 
-      # SonarQube Analysis for Backend
+      
       - name: SonarQube Scanner
         env:
-          SONAR_HOST_URL: http://34.100.138.131:9000  
+          SONAR_HOST_URL: http://34.47.183.81:9000  
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}  
         run: |
           npx sonar-scanner \
@@ -60,8 +65,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
       - name: Install dependencies
         run: npm ci
+        working-directory: ./frontend
+
+      - name: Lint Frontend Code
+        run: npm run lint
         working-directory: ./frontend
 
       - name: Build frontend
@@ -75,7 +85,7 @@ jobs:
       # SonarQube Analysis for Frontend
       - name: SonarQube Scanner
         env:
-          SONAR_HOST_URL: http://34.100.138.131:9000  
+          SONAR_HOST_URL: http://34.47.183.81:9000  
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}  
         run: |
           npx sonar-scanner \
